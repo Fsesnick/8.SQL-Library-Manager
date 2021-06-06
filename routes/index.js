@@ -4,9 +4,10 @@ var Book = require('../models').Book;
 const Sequelize = require('sequelize');
 
 /* GET home page. */
-router.get('/', async function (req, res, next) {
-  res.redirect("/book");
-});
+router.get('/', (req, res, next) => {
+  res.redirect('/books')
+}); 
+
 
 module.exports = router;
 

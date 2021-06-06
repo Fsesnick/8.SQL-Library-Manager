@@ -6,7 +6,7 @@ var logger = require('morgan');
 
 var sequelize = require('./models').sequelize;
 var indexRouter = require('./routes/index');
-var libsRouter = require('./routes/book');
+var libsRouter = require('./routes/books');
 
 var app = express();
 
@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/book', libsRouter);
+app.use('/books', libsRouter);
 
 (async () => {
   try {
@@ -33,7 +33,7 @@ app.use('/book', libsRouter);
 
   try {
     await sequelize.sync();
-    console.log('database synced');
+    console.log('database in sync');
   } catch (error) {
     console.log('Unable to sync the database', error);
   }
@@ -42,18 +42,23 @@ app.use('/book', libsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+  console.log('404 error ');
+  const err = new Error("This page doesn't exists.");
+  res.status(404);
+  res.render('page-not-found', {err});
+  next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  if (err.status === 404) {
+    res.render('page-not-found', {err});
+  } else {
+    console.log('500 error ');
+    err.status = 500;
+    err.message = 'Oops!There was a problem with the server';
+    res.status(err.status).render('error', {err});
+  }
 });
 
 
