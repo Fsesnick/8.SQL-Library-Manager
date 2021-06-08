@@ -33,10 +33,42 @@ router.post('/new', asyncHandler(async (req, res) => {
   res.redirect('/');
  
 }));
+
+/* GET individual book. */
+router.get("/:id", asyncHandler(async (req, res) => {
+  const book = await Book.findByPk(req.params.id);
+  if(book) {
+    res.render("books/updateBook", { book, title: book.title });  
+  } else {
+    res.sendStatus(404);
+  }
+}));
+
+router.post('/:id', asyncHandler(async (req, res) => {
+  let book;
+  try {
+    book = await Book.findByPk(req.params.id);
+    if(book) {
+      await book.update(req.body);
+      res.redirect("/"+ book.id ); 
+    } else {
+      res.sendStatus(404);
+    }
+  } catch (error) {
+    if(error.name === "SequelizeValidationError") {
+      book = await Book.build(req.body);
+      book.id = req.params.id; // make sure correct book gets updated
+      res.render("books/updateBook", { book, errors: error.errors, title: "Edit Book" })
+    } else {
+      throw error;
+    }
+  }
+}));
+
 /**
  * Routes missing:
- *   /books/:id - get
-    /books/:id - post
+ *   
+
     /books/:id/delete - post
  */
 
