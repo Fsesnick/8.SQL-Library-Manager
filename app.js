@@ -55,8 +55,9 @@ app.use(function(err, req, res, next) {
   } else {
     console.log('500 error ');
     err.status = 500;
-    err.message = 'Oops!There was a problem with the server';
+    err.message = 'Oops! There was a problem with the server';
     res.status(err.status).render('error', {err});
+
   }
 });
 
