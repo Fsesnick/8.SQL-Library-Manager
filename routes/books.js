@@ -64,12 +64,16 @@ router.post('/:id', asyncHandler(async (req, res) => {
     }
   }
 }));
+/* route to delete a book */
+router.post('/:id/delete', asyncHandler(async (req ,res) => {
+  const book = await Book.findByPk(req.params.id);
+  if(book){
+    await book.destroy();
+    res.redirect("/books");
+  }else{
+    res.sendStatus(404);
+  }
 
-/**
- * Routes missing:
- *   
-
-    /books/:id/delete - post
- */
+}));
 
 module.exports = router;
