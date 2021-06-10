@@ -41,23 +41,24 @@ app.use('/books', libsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log('404 error ');
-  const err = new Error("This page doesn't exists.");
-  res.status(404);
-  res.render('page-not-found', {err});
+    
+  const err = new Error();
+  err.status = 404;
+  err.header = "Page Not Found"
+  err.message = "Sorry! We couldn't find the page you were looking for!";
   next(err);
 });
 
 // error handler
 app.use(function(err, req, res, next) {
   if (err.status === 404) {
+    res.status(404);
     res.render('page-not-found', {err});
   } else {
     console.log('500 error ');
     err.status = 500;
     err.message = 'Oops! There was a problem with the server';
     res.status(err.status).render('error', {err});
-
   }
 });
 

@@ -1,6 +1,8 @@
 extends layout
 
 block content
-  h1 Server Error
-  p= err.message
-  a(class='button return' href='/') Home
+  h1= err.message
+  h2= err.status
+  pre #{err.stack}
+  
+    a.button(href="/") Home 
