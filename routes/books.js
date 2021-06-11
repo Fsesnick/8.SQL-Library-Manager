@@ -43,29 +43,20 @@ database by the create() method once the
 user submits the form with a valid title.
  */
 
-/* POST create book.
-
+/* POST create book. */
 router.post('/', asyncHandler(async (req, res) => {
   let book;
   try {
-      book = await Book.create(req.body);
-      res.redirect('/');
+    book = await Book.create(req.body);
+    res.redirect("/");
   } catch (error) {
-      if (error.name === 'SequelizeValidationError') {
-          book = await Book.build(req.body);
-          res.render('books/new-book', { book, errors: error.errors, title: 'New Book' })
-      } else {
-          throw error; // error caught in the asyncHandler's catch block
-      }
+    if(error.name === "SequelizeValidationError") {
+      book = await Book.build(req.body);
+      res.render("books/new-book", { book, errors: error.errors, title: "New Book" })
+    } else {
+      throw error;
+    }  
   }
-})); */
-
-/* POST create book. */
-router.post('/new', asyncHandler(async (req, res) => {
-  let book ; 
-  book = await Book.create(req.body);
-  res.redirect('/');
- 
 }));
 
 
