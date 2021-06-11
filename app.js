@@ -23,21 +23,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/books', libsRouter);
 
+
 (async () => {
+  await sequelize.sync();
   try {
     await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
+    console.log('Connection to databse established.');
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-
-  try {
-    await sequelize.sync();
-    console.log('database in sync');
-  } catch (error) {
-    console.log('Unable to sync the database', error);
+    console.error('Connection to database failed: ', error);
   }
 })();
+
+// catch 404 and forward to error handler
+/*app.use(function(req, res, next) {
+    
+  const err = new Error();
+  err.status = 404;
+  err.header = "Page Not Found"
+  err.message = "Sorry! We couldn't find the page you were looking for!";
+  next(err);
+});
+app.use( (req, res, next) => {
+  next(createError(404));
+});
+*/
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -50,15 +59,12 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   if (err.status === 404) {
-    res.status(404);
-    res.render('page-not-found', {err});
+    res.status(404).render('page-not-found', { err });
   } else {
-    console.log('500 error ');
-    err.status = 500;
-    err.message = 'Oops! There was a problem with the server';
-    res.status(err.status).render('error', {err});
+    err.message = err.message || 'Something is wrong!'
+    res.status(err.status || 500).render('error', { err });
   }
 });
 

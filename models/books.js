@@ -1,12 +1,10 @@
 'use strict';
 const Sequelize = require('sequelize');
-const {
-  Model
-} = require('sequelize');
 
-module.exports = (sequelize, DataTypes) => {
 
-  class Book extends Model {
+module.exports = (sequelize) => {
+
+  class Book extends Sequelize.Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -18,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Book.init({
     title: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false, // disallow null
       validate: {
           notEmpty: {
@@ -28,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
        }
       },
     author: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false, // disallow null
       validate: {
           notEmpty: {
@@ -37,11 +35,8 @@ module.exports = (sequelize, DataTypes) => {
         }
        }
       },
-    genre: DataTypes.STRING,
-    year: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Book',
-  });
+    genre: Sequelize.STRING,
+    year: Sequelize.INTEGER
+  }, { sequelize });
   return Book;
 };

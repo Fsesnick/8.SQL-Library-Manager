@@ -17,7 +17,7 @@ function asyncHandler(cb){
     } catch(error){
       // Forward error to the global error handler
     res.status(500).send(error);
-
+    //next(error);
     }
   }
 }
@@ -30,8 +30,8 @@ router.get('/', asyncHandler(async (req, res) => {
 }));
 
 // Create new book
-router.get('/new', (req, res) => {
-  res.render('books/new-book', { books: {}, title: "New Book" });
+router.get('/new',  (req, res) => {
+  res.render('books/new-book', { title: 'New Book', book: {} });
 });
 
 
@@ -43,7 +43,7 @@ database by the create() method once the
 user submits the form with a valid title.
  */
 
-/* POST create book. */
+/* POST create book.
 
 router.post('/', asyncHandler(async (req, res) => {
   let book;
@@ -53,21 +53,21 @@ router.post('/', asyncHandler(async (req, res) => {
   } catch (error) {
       if (error.name === 'SequelizeValidationError') {
           book = await Book.build(req.body);
-          res.render('new-book', { book, errors: error.errors, title: 'New Book' })
+          res.render('books/new-book', { book, errors: error.errors, title: 'New Book' })
       } else {
           throw error; // error caught in the asyncHandler's catch block
       }
   }
-}));
+})); */
 
-/* POST create book. 
+/* POST create book. */
 router.post('/new', asyncHandler(async (req, res) => {
   let book ; 
   book = await Book.create(req.body);
   res.redirect('/');
  
 }));
-*/
+
 
 /* GET individual book. */
 router.get("/:id", asyncHandler(async (req, res) => {
@@ -82,18 +82,19 @@ router.get("/:id", asyncHandler(async (req, res) => {
 }));
 
 router.post('/:id', asyncHandler(async (req, res) => {
-  const book = await Book.findByPk(req.params.id);
+let book;
   try {
+    book = await Book.findByPk(req.params.id);
     if(book) {
-      console.log(req.body);
+
       await book.update(req.body);
       res.redirect('/');
     }
   } catch (error) {
     if(error.name === "SequelizeValidationError") {
       book = await Book.build(req.body);
-      book.id = req.params.id; // make sure correct article gets updated
-      res.render("update-book", { book, errors: error.errors, title: "Update Book" })
+      book.id = req.params.id; // make sure correct book gets updated
+      res.render("books/update-book", { book, errors: error.errors, title: "Update Book" })
     } else {
       throw error;
     }
