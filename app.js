@@ -34,39 +34,29 @@ app.use('/books', libsRouter);
   }
 })();
 
-// catch 404 and forward to error handler
-/*app.use(function(req, res, next) {
-    
-  const err = new Error();
-  err.status = 404;
-  err.header = "Page Not Found"
-  err.message = "Sorry! We couldn't find the page you were looking for!";
-  next(err);
-});
+//404 handler
 app.use( (req, res, next) => {
-  next(createError(404));
-});
-*/
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    
-  const err = new Error();
-  err.status = 404;
-  err.header = "Page Not Found"
-  err.message = "Sorry! We couldn't find the page you were looking for!";
-  next(err);
+  console.log('404 error handler called');
+  res.status(404).render('page-not-found');
 });
 
-// error handler
-app.use(function (err, req, res, next) {
-  if (err.status === 404) {
-    res.status(404).render('page-not-found', { err });
-  } else {
-    err.message = err.message || 'Something is wrong!'
-    res.status(err.status || 500).render('error', { err });
-  }
-});
+//Global error handler
+app.use((err, req, res, next) =>{
 
+console.log("Global");
+    if(err){
+      console.log('Global error handler call', err);
+    }
+
+    if(err.status===404){
+      res.status(404).render("page-not-found", {err});
+    }else{
+      err.message = err.message ||'Something is wrong!';
+      res.status(err.status || 500).render('error', { err });
+    }
+
+});
 
 module.exports = app;
+

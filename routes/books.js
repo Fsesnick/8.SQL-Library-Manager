@@ -42,7 +42,7 @@ being created via req.body. It will get stored in the
 database by the create() method once the 
 user submits the form with a valid title.
  */
-
+//this rout in post('/') need to be the same on the pug action='/books'
 /* POST create book. */
 router.post('/', asyncHandler(async (req, res) => {
   let book;
@@ -61,17 +61,19 @@ router.post('/', asyncHandler(async (req, res) => {
 
 
 /* GET individual book. */
-router.get("/:id", asyncHandler(async (req, res) => {
+router.get("/:id", asyncHandler(async (req, res,next) => {
   const book = await Book.findByPk(req.params.id);
   if(book) {
     res.render("books/update-book", { book, title: book.title });  
   } else {
-    const err = new Error("This page doesn't exists.");
+    const err = new Error();
     res.status(404);
-    res.render('page-not-found', {err});
+    err.message = "This page doesn't exists.";
+    next(err);
   }
 }));
 
+/**Update Book and renders a friendly msg in case of not author or name*/
 router.post('/:id', asyncHandler(async (req, res) => {
 let book;
   try {
@@ -103,5 +105,6 @@ router.post('/:id/delete', asyncHandler(async (req ,res) => {
   }
 
 }));
+
 
 module.exports = router;
